@@ -1,134 +1,68 @@
-MCSL-222 JSP/JDBC LAB — RUN IN YOUR BROWSER WITH GITHUB CODESPACES
+MCSL-222 — STUDENT PROFILE MANAGEMENT USING JSP AND JDBC
+Web Technologies Lab, Question 1(i)
 
-Your managed Mac does not need Docker Desktop, Java, MySQL or Maven installed.
-Everything below runs on GitHub's cloud machine. It does not alter your employer's
-browser/device policy or require accessing a blocked software-installation site.
-Use an account/service permitted for your personal education. This package contains
-only fictional student records and example credentials, not organisation data.
+ASSIGNMENT PROJECT
+https://github.com/SanyamSharma2003/mcsl-222-student-profile
 
-EASIEST ROUTE: BLANK CODESPACE + UPLOAD THE ZIP
+The public repository contains the complete Java/JSP source, schema, sample data,
+configuration, compiled WAR, and live test results. Viewing/downloading source does
+not require the author's Codespace to run. Each evaluator can execute their own
+copy; Codespaces execution requires a GitHub account and available usage quota.
+The full reviewer guide and clickable source links are in README.md.
 
-1. Download student-profile-codespaces.zip. Keep it as a ZIP; do not extract yet.
+APPLICATION AND CONNECTION ASSUMPTIONS
+Java 17; Tomcat 10.1/Jakarta Servlet 6; JSP/JSTL; MySQL 8.4; JDBC pooled DataSource.
+Database: university. Tables: students, lab_credentials, profile_audit, mail_outbox.
+Enrollment is a string; Indian mobile numbers use +91 format. The database image
+runs database/*.sql on a fresh volume to create the schema and fictional fixtures.
+JNDI resources: jdbc/UniversityDB, mail/UniversityMail, profilePublicUrl.
+Database host db:3306 and SMTP host mailpit:1025 use the private Compose network.
+config/student-profile.xml.template defines lab connection settings. The cloud
+startup script generates the current Codespace's HTTPS email-link URL before build.
+The demo uses local passwords and synthetic credentials, not university SSO/MFA.
+Mailpit captures messages without sending real email. These isolated lab settings
+are not a production configuration.
 
-2. Open https://github.com/codespaces and sign in.
-   Under Explore quick start templates, click See all.
-   Find Blank and click Use this template.
-   Wait for the browser-based VS Code editor to open.
-   A blank template uses GitHub's default development environment, which includes
-   Docker tooling in the CLOUD. Nothing is installed on your Mac.
-
-3. In the left Explorer/file panel, upload student-profile-codespaces.zip.
-   Drag the ZIP onto that file panel, or use Upload from its context menu.
-   Confirm that the ZIP name appears in the file list.
-
-4. Open Terminal -> New Terminal in the browser editor. Run:
-
-     unzip student-profile-codespaces.zip
-     cd student-profile-codespaces
+RUN IN YOUR OWN CODESPACE
+1. Open https://codespaces.new/SanyamSharma2003/mcsl-222-student-profile
+   Or use Code -> Codespaces -> Create codespace on main in the repository.
+2. Wait for devcontainer setup and the first image build. Startup is automatic.
+   If necessary, run in that Codespace's terminal:
      bash codespaces/start.sh
+3. Open PORTS. Keep ports 8443 and 8025 Private. Set 8443 to HTTPS and 8025 to HTTP.
+4. Open 8443 in a separate browser tab and append /student-profile/login, or use
+   the application URL printed by the script. Do not use an embedded preview.
+5. Sign in and look up your own sample record:
+   demo1 / LabDemo!2026 — enrollment 6000000001, mobile 9000000001
+   demo2 / LabDemo!2026 — enrollment 240000000002, mobile 6000000001
+   The overlapping token 6000000001 tests account ownership isolation.
+6. Edit contact details and save. To verify email, use a fictional new address,
+   open the test inbox on port 8025, follow its link, and confirm the change.
+   Sign in again if the five-minute recent-password requirement has expired.
+7. Stop YOUR OWN Codespace from https://github.com/codespaces when finished.
+   Closing the browser or running docker compose down alone does not stop cloud
+   compute usage. Save needed work before deleting the environment.
 
-   If the browser changed the downloaded filename, use the actual uploaded ZIP name
-   in the unzip command. The startup script checks the cloud container engine,
-   generates the correct instance-specific HTTPS email URL, builds the Java app,
-   starts MySQL and a test mailbox, then waits until the login page responds.
-   The first build downloads cloud images/dependencies and may take several minutes.
+OPTIONAL LOCAL RUN
+On a permitted machine with Docker engine and Docker Compose already running,
+download/extract the source, open the project directory, and run:
+  cp config/student-profile.xml.template config/student-profile.xml
+  docker compose up --build -d
+Application: https://localhost:8443/student-profile/login
+Test inbox: http://localhost:8025
+The localhost demo uses a self-signed TLS certificate; any exception is only for
+that local demo address. Stop while retaining the database: docker compose down
+Local execution was not live-tested on the managed Mac.
 
-5. In the bottom PORTS tab, add ports 8443 and 8025 if not already listed.
-   For 8443, right-click -> Change Port Protocol -> HTTPS.
-   For 8025, leave the protocol HTTP.
-   Keep BOTH ports Private. Do not change them to Public.
-   Use Open in Browser (the globe icon) for port 8443. Open a separate browser tab;
-   the app deliberately disallows iframe/embedded preview.
-   Append /student-profile/login to the forwarded URL if it opens a server root.
-   You can also use the exact login URL printed by codespaces/start.sh.
-   Do not type your Mac's localhost address; this server is in the cloud.
-
-6. Sign in:
-     Username: demo1
-     Password: LabDemo!2026
-
-   Lookup with either:
-     Enrollment: 6000000001
-     Mobile:     9000000001
-
-   Click Find my profile. Edit address, contact mobile or requested email, then Save.
-
-TEST EMAIL CONFIRMATION
-   Change the email to a sample such as learner.new@example.com and save.
-   Open port 8025 using its globe icon or the test-inbox URL printed by the script.
-   Wait briefly for the background mail worker, open the verification message, and
-   click its cloud HTTPS link. Keep demo1 signed in; click Confirm email change.
-   The old verified email stays current until confirmation succeeds. A GET link
-   alone does not mutate the profile. Tokens expire after 15 minutes and are one-use.
-   Mailpit captures mail in this test inbox; it does not deliver to real recipients.
-
-SECOND SAMPLE ACCOUNT
-     Username: demo2
-     Password: LabDemo!2026
-     Enrollment: 240000000002
-     Mobile: 6000000001
-   Use Sign out before switching accounts. The overlapping token 6000000001 is
-   intentional: each signed-in student can still access only their own profile.
-
-RECENT PASSWORD CONFIRMATION
-   Saving or confirming email requires password authentication within five minutes.
-   If redirected to login, sign in again, then repeat the lookup/edit or reopen the
-   email link. This demo uses real local password checking, not university SSO/MFA.
-
-STOP WHEN FINISHED
-   In the same project directory:
-     bash codespaces/stop.sh
-   Then go to https://github.com/codespaces, find this Codespace and select Stop.
-   Stopping the app containers alone does not stop Codespaces compute usage.
-   Usage/storage are subject to your GitHub account allowance and settings.
-
-   To resume in the same Codespace, open its terminal, return to this project folder,
-   and run bash codespaces/start.sh again. The named database volume is retained
-   across ordinary container stops. A deleted/rebuilt cloud machine can lose its
-   Docker volume. Download needed assignment source/results before deleting it.
-
-OPTIONAL ROUTE: YOUR OWN PRIVATE GITHUB REPOSITORY
-   Upload the CONTENTS of this project at the repository root. Include .devcontainer
-   and .dockerignore (Mac Finder shows hidden files with Command+Shift+.).
-   The root should contain compose.yaml, Dockerfile, app/, config/, codespaces/ and
-   .devcontainer/. Do not upload just the ZIP as a repository source file.
-   Select Code -> Codespaces -> Create codespace on main. The included devcontainer
-   automatically configures HTTPS port 8443 and runs the startup script at startup.
-   The blank-template route above avoids needing to create/publish a repository.
-
-TROUBLESHOOTING
-   No PORTS tab: open View -> Terminal, then choose PORTS beside the Terminal tab.
-   502 / SSL error: set 8443's port protocol to HTTPS and check the app is running.
-   Blank embedded preview: use Open in Browser / a separate tab.
-   Email link points to localhost: rerun bash codespaces/start.sh to regenerate it.
-   Build failed: docker compose logs --tail=100 app; inspect the startup output too.
-   Engine missing: the selected template may have custom restrictions. The optional
-   repository devcontainer defines the required engine feature; do not install any
-   software or alter security settings on the managed Mac to compensate.
-   A cloud preview URL is blocked by organisation policy: this package cannot
-   override that policy. Use a permitted personal device or university lab instead.
-
-IMPLEMENTATION AND BOUNDARIES
-   Java 17 + Tomcat 10.1 + MySQL 8.4; JSP view, Servlet controller, JDBC persistence.
-   Secure session cookies, CSRF, bound principal ownership, prepared SQL, version
-   checks, transactional audit/outbox, hashed expiring email tokens are retained.
-   The named cloud instances generate HTTPS mail links before image construction.
-   Local test credentials/plain DB/test SMTP stay inside this synthetic lab stack.
-   This sample is not for real learner data/public deployment. The original SSO
-   reference project defines the university integration separately.
-
-VALIDATION STATUS
-   Live-tested in GitHub Codespaces on 14 November 2026: Docker/Maven build,
-   Tomcat/JSP startup, MySQL/JDBC, browser login and all 10 smoke checks passed.
-   Repeat inside the running Codespace: python3 checks/cloud_smoke_test.py
-   The test covers owner-scoped lookups, CSRF rejection, saved address and verified
-   email changes through Mailpit; it restores the original address and email.
-   Authoring checks also cover Bash syntax, XML/JSON, password hashes and lookup SQL.
-   Production SSO/MFA and real email delivery are not certified. See CHECKS.txt.
-   The accompanying download will include the built WAR: dist/student-profile.war.
-
-PRIMARY REFERENCES
-   https://docs.github.com/en/codespaces/developing-in-a-codespace/creating-a-codespace-from-a-template
-   https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace
-   https://github.com/github/docs/blob/main/content/codespaces/developing-in-a-codespace/default-environment-variables-for-your-codespace.md
-   https://github.com/devcontainers/images/blob/main/src/universal/.devcontainer/devcontainer.json
+FILES AND VALIDATION
+Source: app/src/main/java/edu/university/profile/ and app/src/main/webapp/WEB-INF/
+Schema/fixtures/grants: database/01-schema.sql, 02-students.sql, 03-local-login.sql
+Included compiled WAR: dist/student-profile.war
+The WAR needs the supplied Tomcat libraries, JNDI, MySQL and SMTP configuration.
+Live results: checks/LIVE-RESULTS.txt. Coverage and limits: CHECKS.txt.
+Submission text: docs/SUBMISSION.txt.
+Live-tested in GitHub Codespaces on 14 November 2026: Docker/Maven build,
+Tomcat/JSP startup, MySQL/JDBC, browser login and all 10 smoke checks passed.
+Repeat in the running environment: python3 checks/cloud_smoke_test.py
+The test restores original address and verified email. Production readiness,
+university SSO/MFA and real email delivery are not certified by these lab tests.

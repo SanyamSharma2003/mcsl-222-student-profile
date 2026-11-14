@@ -1,45 +1,66 @@
-# MCSL-222 Student Profile Lab
+# MCSL-222 — Student Profile Management using JSP and JDBC
 
-Run this JSP/JDBC assignment in GitHub Codespaces without installing Java, MySQL, or Tomcat on your computer.
+Web Technologies Lab, Question 1(i): an authenticated university learner finds their own profile using an enrollment number or registered mobile number, then updates the communication address, mobile number, and email. A changed email remains pending until its confirmation link is used.
 
-## Open and start
+**Assignment project:** [SanyamSharma2003/mcsl-222-student-profile](https://github.com/SanyamSharma2003/mcsl-222-student-profile). Source and downloads can be reviewed without a running Codespace. To execute it in Codespaces, each evaluator needs their own GitHub account and available Codespaces allowance or billing quota.
 
-1. [Open your existing Codespace](https://laughing-space-pancake-pqxvg6576g7frjr6.github.dev/), named `laughing-space-pancake`.
-2. Wait for its container setup to finish. If the lab is not running, enter this in its terminal:
+## Stack and database assumptions
+
+- Java 17, Tomcat 10.1 / Jakarta Servlet 6, JSP/JSTL, MySQL 8.4, and JDBC through a pooled JNDI `DataSource`.
+- Database `university` contains `students`, `lab_credentials`, `profile_audit`, and `mail_outbox`. Enrollment numbers are strings; Indian mobile numbers use `+91` format. The supplied SQL creates the schema and fictional fixtures automatically on the database volume's first startup.
+- JNDI names are `jdbc/UniversityDB`, `mail/UniversityMail`, and `profilePublicUrl`. The [configuration template](config/student-profile.xml.template) uses database host `db:3306` and test SMTP host `mailpit:1025` on the private Compose network. The startup script generates the current Codespace's HTTPS email-link URL before building.
+- Sample credentials and unencrypted database/test-SMTP connections are for this isolated lab only. Authentication uses local password verification; university SSO/MFA and real email delivery are outside this demo.
+
+## Source and submission files
+
+- [Java controller, validation, JDBC DAO, authentication and mail worker](app/src/main/java/edu/university/profile/) · [JSP form](app/src/main/webapp/WEB-INF/profile.jsp)
+- [Database schema](database/01-schema.sql) · [sample learners](database/02-students.sql) · [sample login setup and database grants](database/03-local-login.sql)
+- [Build configuration](app/pom.xml) · [server libraries](build/runtime-pom.xml) · [Docker deployment](compose.yaml)
+- [Included compiled WAR](dist/student-profile.war) · [live test results](checks/LIVE-RESULTS.txt) · [verification scope](CHECKS.txt) · [ready-to-copy submission text](docs/SUBMISSION.txt)
+
+The WAR needs the supplied Tomcat libraries, JNDI resources, database, and test SMTP configuration; the Compose build sets these up together.
+
+## Run in your own Codespace
+
+1. [Create a Codespace for this repository](https://codespaces.new/SanyamSharma2003/mcsl-222-student-profile), or select **Code → Codespaces → Create codespace on main** on the repository page. This creates your own environment.
+2. Wait for setup and the first image build. The devcontainer starts the lab automatically. If needed, run this in its terminal:
 
    ```bash
    bash codespaces/start.sh
    ```
 
-3. Open **Ports**. Keep ports **8443** and **8025** **Private**.
-4. For **8443**, right-click its row and set **Change Port Protocol → HTTPS**, then **Open in Browser**.
-5. Open `/student-profile/login` at that forwarded address, or use the application URL printed by the script.
+3. Open **Ports** and keep **8443** and **8025** **Private**. Port **8443** must use **HTTPS**; port **8025** uses **HTTP** as its backend protocol.
+4. For **8443**, use **Open in Browser** and append `/student-profile/login`, or open the exact application URL printed by the startup script. Use a separate tab; embedded previews are blocked by the app's security policy.
+5. Sign in and look up the matching enrollment or mobile number below. To test email, save a new fictional address such as `learner@example.invalid`, open the test inbox on **8025**, follow the message link, and click **Confirm email change**. Mailpit captures messages without sending real email.
 
-Port **8025** is the test email inbox. Its backend port protocol stays **HTTP**; open it from **Ports** or use the printed inbox URL. GitHub provides HTTPS for the browser-facing forwarded address.
+| Username | Password | Enrollment number | Mobile number |
+|---|---|---|---|
+| `demo1` | `LabDemo!2026` | `6000000001` | `9000000001` |
+| `demo2` | `LabDemo!2026` | `240000000002` | `6000000001` |
 
-## Try the application
+The overlapping token `6000000001` deliberately tests ownership: each account retrieves only its own record. Saving and confirming email require a password login within five minutes; sign in again and repeat the action if prompted.
 
-- Sign in with username **demo1** and password **LabDemo!2026**.
-- Look up **6000000001** (enrollment) or **9000000001** (mobile).
-- Change the communication address or mobile number, then save.
-- To test email verification, enter a new address such as `learner@example.invalid`, save, and open the confirmation message in the port **8025** test inbox. No real email is sent.
-- Follow the email link and confirm the change. Sign in again if the five-minute password confirmation expires.
+When finished, stop **your own Codespace** from its **… → Stop codespace** menu at [GitHub Codespaces](https://github.com/codespaces). Closing its browser tab or stopping only the application containers does not stop Codespaces compute usage. Database changes persist across ordinary stops; retain needed work before deleting the environment.
 
-The second account is **demo2**, with the same password. Its enrollment is **240000000002** and mobile is **6000000001**. That mobile deliberately matches demo1's enrollment: each signed-in account must retrieve only its own record.
+## Optional local execution
 
-All records and credentials are synthetic. This local lab verifies passwords; it does not implement the enterprise version's university SSO or MFA integration.
+On a permitted computer with a running Docker engine and Docker Compose, download/extract the source, open its project directory, and run:
 
-## Source, schema, and stopping
+```bash
+cp config/student-profile.xml.template config/student-profile.xml
+docker compose up --build -d
+```
 
-- Java source: `app/src/main/java/edu/university/profile/`
-- JSP form: `app/src/main/webapp/WEB-INF/profile.jsp`
-- Database definition and fixtures: `database/`
-- Full schema and configuration notes: [README.txt](README.txt)
+Open [local login](https://localhost:8443/student-profile/login) and [local test inbox](http://localhost:8025). The localhost demo uses a self-signed certificate; any certificate exception applies only to this local demo address. To stop the containers while retaining the database, run `docker compose down`.
 
-Files saved in the Codespace persist when it stops. Commit and push source changes to preserve a separate copy in the repository; deleting the Codespace can delete unpushed work and its database volume.
+## Verification
 
-When finished, open [GitHub Codespaces](https://github.com/codespaces), find this Codespace, choose its **…** menu, and select **Stop codespace**. Closing the browser tab alone does not stop it.
+Live-tested in GitHub Codespaces on **14 November 2026**: Docker/Maven builds, Tomcat/JSP startup, MySQL/JDBC, browser login, and all 10 [smoke checks](checks/LIVE-RESULTS.txt) passed. They cover both lookups, cross-owner denial, CSRF rejection, address persistence, email delivery/confirmation, and restoration of original contact data. Repeat inside the running environment:
 
-Live deployment was verified in GitHub Codespaces on **14 November 2026**: Docker/Maven builds, Tomcat/JSP startup, MySQL/JDBC, browser login, and the full profile/email smoke test passed. Run `python3 checks/cloud_smoke_test.py` inside the running Codespace to repeat the checks; the script restores the original address and verified email. See [CHECKS.txt](CHECKS.txt) for coverage and limitations. Production university SSO/MFA and real email delivery are not certified by these lab checks.
+```bash
+python3 checks/cloud_smoke_test.py
+```
 
-The accompanying download will include the built WAR at `dist/student-profile.war`. This WAR requires the supplied Tomcat/JNDI/database configuration and runtime libraries.
+See [CHECKS.txt](CHECKS.txt) for limits. These synthetic lab checks do not certify production readiness, university SSO/MFA integration, or real email delivery. Local Docker execution is documented but was not live-tested on the managed Mac.
+
+GitHub documents the repository launch-link format in [Creating a link to the codespace creation page](https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/setting-up-your-repository/facilitating-quick-creation-and-resumption-of-codespaces).

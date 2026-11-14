@@ -33,5 +33,5 @@ Limits:
   This synthetic lab test does not certify production readiness or verify
   university SSO/MFA integration, real email delivery, or use with real learner data.
   Organisation-specific network policies may differ on another device/network.
-  The built WAR will be supplied at dist/student-profile.war; its runtime still
+  The built WAR is included at dist/student-profile.war; its runtime still
   requires the configured Tomcat libraries, JNDI resources, MySQL and test SMTP.

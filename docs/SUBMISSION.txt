@@ -1,0 +1,17 @@
+MCSL-222 — OOAD AND WEB TECHNOLOGIES LAB
+Section 2: Web Technologies Lab — Question 1(i)
+
+Project: Student Profile Management using JSP and JDBC
+Assignment project link:
+https://github.com/SanyamSharma2003/mcsl-222-student-profile
+
+Scope: An authenticated university learner can locate their own student record
+using an enrollment number or registered mobile number, update communication
+address and mobile contact, and confirm a changed email address before it becomes
+current. Includes Java/JSP source, JDBC persistence, MySQL schema and fictional
+fixtures, configuration, a compiled WAR, execution instructions, and live tests.
+
+Evaluation: Read or download the repository directly. For interactive evaluation,
+follow README.md to create your own Codespace; this requires a GitHub account and
+available Codespaces quota. Reviewing source does not require a running Codespace.
+The submitted project link is independent of the author's private live session.
