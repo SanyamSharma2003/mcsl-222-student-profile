@@ -1,0 +1,6 @@
+config/student-profile.xml
+app/target/
+*.log
+*.zip
+**/__pycache__/
+.DS_Store

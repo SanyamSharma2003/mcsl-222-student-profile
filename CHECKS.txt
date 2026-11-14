@@ -1,0 +1,37 @@
+CODESPACES PACKAGE — VERIFIED 2026-11-14
+
+Live deployment verification:
+  GitHub Codespaces Docker image build and Maven WAR build succeeded.
+  Tomcat deployed the Java/JSP application; MySQL initialized and accepted JDBC
+  operations. The application and test mailbox ran in separate containers.
+  Application port 8443 uses HTTPS forwarding; ports 8443 and 8025 are Private.
+  Browser login as demo1 displayed the correct editable fictional MCA profile.
+
+Live Python stdlib smoke test:
+  Command (inside the Codespace): python3 checks/cloud_smoke_test.py
+  Result: all 10 PASS checks and ALL LIVE SMOKE CHECKS PASSED.
+  Verified demo login and JSP rendering; enrollment and mobile lookup;
+  cross-owner lookup rejection; invalid-CSRF rejection; persisted address update;
+  pending email state; outbox delivery to Mailpit; email ownership
+  confirmation; and restoration of the original address and verified email.
+  The test used synthetic records and did not reset the database or delete mail.
+
+Additional authoring checks:
+  Five XML files/templates parse; devcontainer JSON parses with correct protocols.
+  Compose YAML structure and localhost-only host port bindings are retained.
+  Database has no published port; app depends on database health.
+  Two seeded password hashes accept the supplied demo password and reject a wrong one.
+  10 actual owner-scoped lookup-SQL cases pass on a portable SQLite fixture.
+  Bash syntax checks pass for startup and stop scripts.
+  Controlled startup-script tests validate URL generation, regeneration for a new
+  Codespace name, command order and readiness checks with substitute commands.
+  Startup refuses non-Codespaces or malformed instance environments.
+  Previous archive integrity and hidden devcontainer file inclusion were checked;
+  final archive integrity must be checked after packaging the live-tested files.
+
+Limits:
+  This synthetic lab test does not certify production readiness or verify
+  university SSO/MFA integration, real email delivery, or use with real learner data.
+  Organisation-specific network policies may differ on another device/network.
+  The built WAR will be supplied at dist/student-profile.war; its runtime still
+  requires the configured Tomcat libraries, JNDI resources, MySQL and test SMTP.

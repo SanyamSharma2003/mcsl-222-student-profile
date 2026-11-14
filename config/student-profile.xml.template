@@ -1,0 +1,19 @@
+<!-- Cloud LAB ONLY. Fake records, private Codespaces ports, private container network. -->
+<Context>
+  <CookieProcessor sameSiteCookies="lax"/>
+  <Environment name="profilePublicUrl" type="java.lang.String" override="false"
+               value="https://localhost:8443/student-profile/profile"/>
+  <Resource name="jdbc/UniversityDB" auth="Container" type="javax.sql.DataSource"
+            factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"
+            driverClassName="com.mysql.cj.jdbc.Driver"
+            url="jdbc:mysql://db:3306/university?sslMode=DISABLED&amp;allowPublicKeyRetrieval=true&amp;connectionTimeZone=UTC&amp;forceConnectionTimeZoneToSession=true&amp;connectTimeout=5000&amp;socketTimeout=10000"
+            username="profile_app" password="LocalDatabaseOnly2026"
+            maxTotal="10" maxIdle="3" maxWaitMillis="5000"
+            defaultAutoCommit="true" defaultTransactionIsolation="READ_COMMITTED"
+            validationQuery="SELECT 1" validationQueryTimeout="3" testOnBorrow="true"/>
+  <Resource name="mail/UniversityMail" auth="Container" type="jakarta.mail.Session"
+            mail.smtp.host="mailpit" mail.smtp.port="1025" mail.smtp.auth="false"
+            mail.from="no-reply@university.example"
+            mail.smtp.connectiontimeout="5000" mail.smtp.timeout="10000"
+            mail.smtp.writetimeout="10000"/>
+</Context>

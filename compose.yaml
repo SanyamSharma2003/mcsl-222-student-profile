@@ -1,0 +1,37 @@
+name: mcsl222-profile-codespaces
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: LocalRootOnly2026
+      MYSQL_DATABASE: university
+      MYSQL_USER: profile_app
+      MYSQL_PASSWORD: LocalDatabaseOnly2026
+      TZ: UTC
+    command: ["--default-time-zone=+00:00"]
+    volumes:
+      - profile_database:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" -N -e 'SELECT COUNT(*) FROM university.lab_credentials' >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "127.0.0.1:8025:8025"
+  app:
+    build: .
+    environment:
+      JAVA_OPTS: "-Duser.timezone=UTC"
+    depends_on:
+      db:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    ports:
+      - "127.0.0.1:8443:8443"
+volumes:
+  profile_database:

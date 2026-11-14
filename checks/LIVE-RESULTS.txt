@@ -1,0 +1,11 @@
+PASS demo login and JSP rendering
+PASS enrollment lookup
+PASS mobile lookup
+PASS cross-owner lookup denied
+PASS invalid CSRF rejected
+PASS address save persisted
+PASS original address restored
+PASS new email remains pending before verification
+PASS outbox delivery and email ownership confirmation
+PASS original verified email restored
+ALL LIVE SMOKE CHECKS PASSED

@@ -1,0 +1,23 @@
+{
+  "name": "MCSL-222 JSP and JDBC Lab",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "remoteUser": "vscode",
+  "forwardPorts": [8443, 8025],
+  "portsAttributes": {
+    "8443": {
+      "label": "Student profile (HTTPS)",
+      "protocol": "https",
+      "onAutoForward": "notify"
+    },
+    "8025": {
+      "label": "Test email inbox",
+      "protocol": "http",
+      "onAutoForward": "notify"
+    }
+  },
+  "otherPortsAttributes": { "onAutoForward": "ignore" },
+  "postStartCommand": "bash codespaces/start.sh"
+}
